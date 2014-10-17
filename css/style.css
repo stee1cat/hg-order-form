@@ -1,0 +1,54 @@
+#hg-form-wrapper {
+    padding: 20px 0;
+}
+#hg-form-wrapper .hg-form-title {
+    display: block;
+    font-size: 24px;
+    font-style: normal;
+    font-weight: bold;
+}
+#hg-form label {
+    display: block;
+}
+#hg-form input.error, #hg-form textarea.error {
+    border-color: #f00;
+}
+#hg-form ul {
+    margin: 0;
+    list-style-type: none;
+}
+#hg-form > ul > li {
+    margin: 10px 0;
+}
+#hg-form input[type="text"] {
+    width: 395px;
+    margin: 0;
+}
+#hg-form .file-wrapper {
+    position: relative;
+    margin: 10px 0;
+}
+#hg-form .file-wrapper .close {
+    display: block;
+    position: absolute;
+    right: 0;
+    top: 0;
+    font-size: 16px;
+    line-height: 16px;
+    cursor: pointer;
+}
+#hg-form .progress {
+    width: 100%;
+    height: 22px;
+    border: 1px solid #111;
+    background-color: #eee;
+}
+#hg-form .progress div {
+    height: 100%;
+    color: #fff;
+    font-size: 14px;
+    text-align: right;
+    line-height: 22px;
+    width: 0;
+    background-color: #1a82f7;
+}
