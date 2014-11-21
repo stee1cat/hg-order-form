@@ -30,7 +30,9 @@
          */
         public function shortcode($atts) {
             $this->needScript = true;
-            extract($atts, EXTR_SKIP);
+            if (is_array($atts)) {
+                extract($atts, EXTR_SKIP);
+            }
             require $this->pluginDir."inc".DIRECTORY_SEPARATOR."form.php";
         }
 
