@@ -241,11 +241,13 @@ HTML;
         private function getFiles() {
             $result = array();
             $directory = $this->getUserDir();
-            $list = scandir($directory);
-            foreach ($list as $file) {
-                if (!in_array($file, array(".", ".."))) {
-                    $result[] = $directory.$file;
-                }
+            if (is_dir($directory)) {
+                $list = scandir($directory);
+                foreach ($list as $file) {
+                    if (!in_array($file, array(".", ".."))) {
+                        $result[] = $directory.$file;
+                    }
+                }                
             }
             return array_slice($result, 0, $this->getOption("maxfiles"));
         }
