@@ -3,12 +3,8 @@
     $(document).ready(function () {
 
         var form = (function () {
-                var pluginNS = "hg-form",
-                    form = $('#' + pluginNS),
-                    maxFiles = form.data("maxfiles"),
-                    ajaxUrl = form.attr('action'),
-                    deleteFile, setProgress, addFile, getFileList,
-                    init, setMessage, submitForm, countFiles, getInfoString;
+                var pluginNS = "hg-form", maxFiles, ajaxUrl, deleteFile, setProgress, addFile, isPopup,
+                    getFileList, initForm, form, init, setMessage, submitForm, countFiles, getInfoString;
                 setMessage = function (message, file) {
                     $("input, .progress", file).remove();
                     if (typeof message === "string") {
@@ -101,9 +97,10 @@
                         submit.prop("disabled", true);
                         submit.val("Отправка…");
                         $.post(ajaxUrl, data, function (response) {
+                            var resultBlock = (isPopup)? $("#" + pluginNS + "-result", $('#fancybox-content')): $("#" + pluginNS + "-result");
                             submit.prop("disabled", false);
                             submit.val(btnText);
-                            $("#" + pluginNS + "-result").append($("<p>", {
+                            resultBlock.append($("<p>", {
                                 text: response.msg
                             }));
                             form.hide("fast").remove();
@@ -112,6 +109,24 @@
                     e.preventDefault();
                 };
                 init = function () {
+                    var buttons = $('.' + pluginNS + '-button');
+                    if (buttons.length) {
+                        isPopup = true;
+                        buttons.on('click', function (e) {
+                            $.fancybox($('#' + pluginNS + '-popup').html(), {
+                                onComplete: initForm
+                            });
+                            e.preventDefault();
+                        });
+                    }
+                    else {
+                        initForm();
+                    }
+                };
+                initForm = function () {
+                    form = (isPopup)? $('form', $('#fancybox-content')): $('#' + pluginNS);
+                    maxFiles = form.data("maxfiles");
+                    ajaxUrl = form.attr('action');
                     if (ajaxUrl === undefined) {
                         console.log("Ajax handler url is empty");
                     }

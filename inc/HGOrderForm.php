@@ -13,6 +13,7 @@
         private $needScript = false;
         private static $pluginName = "hg-form";
         private static $shortcode = "hg-order";
+        private static $shortcodePopup = "hg-order-popup";
 
         public function __construct() {
             $this->pluginDir = dirname(dirname(__FILE__)).DIRECTORY_SEPARATOR;
@@ -34,6 +35,38 @@
                 extract($atts, EXTR_SKIP);
             }
             require $this->pluginDir."inc".DIRECTORY_SEPARATOR."form.php";
+        }
+
+        /**
+         * Выводит всплывающее окно в футере
+         *
+         * @return string
+         */
+        public function popup() {
+            $content = '';
+            ob_start();
+            echo '<div id="'.$this->ns('popup').'" style="display: none;">';
+            require $this->pluginDir."inc".DIRECTORY_SEPARATOR."form.php";
+            echo '</div>';
+            $content = ob_get_clean();
+            echo $content;
+        }
+
+        /**
+         * Shortcode для всплывающей формы
+         *
+         * @param $atts
+         * @return string
+         */
+        public function shortcodePopup($atts) {
+            $this->needScript = true;
+            $this->initPopup();
+            $title = $this->getOption("title");
+            extract(shortcode_atts(array(
+                'title' => ($title)? $title: 'Отправить заявку',
+                'url' => '#'
+            ), $atts), EXTR_SKIP);
+            return '<a href='.$url.' class="'.$this->ns('button').'">'.$title.'</a>';
         }
 
         /**
@@ -88,13 +121,8 @@
             register_setting(self::$pluginName."-options", self::$pluginName."_title", "trim");
             register_setting(self::$pluginName."-options", self::$pluginName."_recipient");
             register_setting(self::$pluginName."-options", self::$pluginName."_maxfiles", "intval");
-            register_setting(self::$pluginName."-options", self::$pluginName."_maxsize", "intval");
         }
 
-        /**
-         * Подключение JS
-         *
-         */
         public function enqueueJS() {
             if ($this->needScript) {
                 wp_enqueue_script("maskedinput");
@@ -105,10 +133,6 @@
             }
         }
 
-        /**
-         * Подключение CSS
-         *
-         */
         public function enqueueCSS() {
             if ($this->needScript) {
                 wp_enqueue_style(self::$pluginName."style");
@@ -116,7 +140,7 @@
         }
 
         /**
-         * Регистрация JS
+         * Подключение JS
          *
          */
         private function registerJS() {
@@ -128,7 +152,7 @@
         }
 
         /**
-         * Регистрация CSS
+         * Подключение CSS
          *
          */
         private function registerCSS() {
@@ -145,8 +169,17 @@
             add_action("wp_footer", array($this, "enqueueJS"));
             add_action("wp_footer", array($this, "enqueueCSS"));
             add_shortcode(self::$shortcode, array($this, "shortcode"));
+            add_shortcode(self::$shortcodePopup, array($this, "shortcodePopup"));
             $this->registerJS();
             $this->registerCSS();
+        }
+
+        /**
+         * Инициализирует всплывающее окно с формой
+         *
+         */
+        private function initPopup() {
+            add_action("wp_footer", array($this, "popup"));
         }
 
         /**
@@ -220,12 +253,6 @@ HTML;
             return !$error;
         }
 
-        /**
-         * Возвращает имя класса или ID элемента с префиксом плагина
-         *
-         * @param string $string
-         * @return string
-         */
         private function ns($string = "") {
             if ($string) {
                 $string = "-".rtrim($string, "-");
@@ -233,11 +260,6 @@ HTML;
             return self::$pluginName.$string;
         }
 
-        /**
-         * Возвращает список файлов загруженных пользователем
-         *
-         * @return array
-         */
         private function getFiles() {
             $result = array();
             $directory = $this->getUserDir();
@@ -247,45 +269,24 @@ HTML;
                     if (!in_array($file, array(".", ".."))) {
                         $result[] = $directory.$file;
                     }
-                }                
+                }
             }
             return array_slice($result, 0, $this->getOption("maxfiles"));
         }
 
-        /**
-         * Возвращает абсолютный путь к директории с файлами пользователя
-         *
-         * @return string
-         */
         private function getUserDir() {
             @session_start();
             return $this->uploadDir.session_id().DIRECTORY_SEPARATOR;
         }
 
-        /**
-         * Возвращает значение параметра по его имени
-         *
-         * @param string $name
-         * @return mixed
-         */
         private function getOption($name) {
             return get_option(self::$pluginName."_".ltrim($name, "_"));
         }
 
-        /**
-         * Возвращает имя хоста
-         *
-         * @return string
-         */
         private function getHost() {
             return preg_replace("/^w{3}\./iu", "", $_SERVER["SERVER_NAME"]);
         }
 
-        /**
-         * Рекурсивно удаляет файлы из директории пользователя
-         *
-         * @return bool
-         */
         private function removeUserDir() {
             $path = $this->getUserDir();
             if (file_exists($path) && rtrim($path, DIRECTORY_SEPARATOR) != rtrim($this->uploadDir, DIRECTORY_SEPARATOR)) {

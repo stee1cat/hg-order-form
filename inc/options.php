@@ -2,7 +2,7 @@
     /**
      * @var $this HGOrderForm
      */
-?>    
+?>
 
 <div class="wrap">
     <h2>Настройки формы заказа</h2>
@@ -19,7 +19,7 @@
             <tr valign="top">
                 <th scope="row">E-mail получателя:</th>
                 <td><input type="text" name="<?php echo self::$pluginName; ?>_recipient" value="<?php echo $this->getOption("recipient"); ?>" /></td>
-            </tr>     
+            </tr>
             <tr valign="top">
                 <th scope="row">Максимальное число файлов во вложении:</th>
                 <td>
@@ -27,23 +27,8 @@
 <?php
     $maxFiles = $this->getOption("maxfiles");
     foreach (range(0, 6) as $number) {
-?>    
-                        <option value="<?php echo $number; ?>" <?php selected($maxFiles, $number); ?>><?php echo $number; ?></option>
-<?php
-    }
-?>    
-                    </select>
-                </td>
-            </tr>
-            <tr valign="top">
-                <th scope="row">Максимальный размер файла во вложении (МБ):</th>
-                <td>
-                    <select name="<?php echo self::$pluginName; ?>_maxsize">
-<?php
-    $maxSize = $this->getOption("maxsize");
-    foreach (range(1, 6) as $size) {
 ?>
-                            <option value="<?php echo $size; ?>" <?php selected($maxSize, $size); ?>><?php echo $size; ?></option>
+                        <option value="<?php echo $number; ?>" <?php selected($maxFiles, $number); ?>><?php echo $number; ?></option>
 <?php
     }
 ?>
@@ -53,5 +38,5 @@
         </table>
         <?php submit_button(); ?>
     </form>
-    <p>Доступен код <b>[<?php echo self::$shortcode; ?>]</b> для вставки на страницу.</p>
+    <p>Доступны коды <b>[<?php echo self::$shortcode; ?>]</b>, <b>[<?php echo self::$shortcodePopup; ?>]</b> для вставки на страницу.</p>
 </div>

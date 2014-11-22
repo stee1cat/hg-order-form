@@ -10,7 +10,6 @@
 <?php
     }
     $maxFiles = $this->getOption("maxfiles");
-    $maxSize = $this->getOption("maxsize");
 ?>
     <form id="<?php echo $this->ns(); ?>" action="<?php echo admin_url("admin-ajax.php"); ?>" method="post"
           enctype="multipart/form-data"
@@ -18,7 +17,7 @@
           data-maxfiles="<?php echo $maxFiles; ?>">
         <ul>
             <li>
-                <p><i>Поля отмеченные (*) &mdash; обязательны для заполнения</i></p>
+                <i>Поля отмеченные (*) &mdash; обязательны для заполнения.</i>
             </li>
             <li>
                 <label>Ваше имя:</label>
@@ -41,8 +40,8 @@
 ?>
             <li>
                 <fieldset class="files">
-                    <legend>Прикрепить файлы</legend>
-                    <p>Вы можете добавить не более <?php echo $maxFiles." "._n('файла', 'файлов', $maxFiles); ?>. Размер каждого файла не должен привышать <?php echo $maxSize; ?>МБ.</p>
+                    <legend>Прикрепить файлы:</legend>
+                    <p><i>Вы можете добавить не более <?php echo $maxFiles." "._n('файла', 'файлов', $maxFiles); ?>. Размер каждого файла не должен привышать 2 МБ.</i></p>
                     <div class="file-actions">
                         <button class="add-file">Добавить файл</button>
                     </div>

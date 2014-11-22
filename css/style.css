@@ -52,3 +52,16 @@
     width: 0;
     background-color: #1a82f7;
 }
+a.hg-form-button {
+    background: none repeat scroll 0 0 #1982d1;
+    border-radius: 4px;
+    color: #fff;
+    margin: 8px auto;
+    padding: 10px 20px;
+    width: 200px;
+    display: inline-block;
+    text-align: center;
+}
+#fancybox-content #hg-form-wrapper {
+    margin: 10px 20px;
+}
